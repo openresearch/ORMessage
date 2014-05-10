@@ -39,4 +39,6 @@
 - (void)showMessagesWithIdentifiers:(NSArray*)identifiers animated:(BOOL)animated;
 - (void)showAllMessagesAnimated:(BOOL)animated;
 
+- (void)layoutMessagesAnimated:(BOOL)animated;
+
 @end

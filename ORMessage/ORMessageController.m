@@ -28,7 +28,7 @@
 
 // Helper
 @property(readonly,nonatomic) UIView* view;
-- (void)layoutMessagesAnimated:(BOOL)animated;
+
 - (void)layoutMessagesExcept:(ORMessage*)message animated:(BOOL)animated;
 
 - (CGRect)viewFrameForNewMessage:(ORMessage*)newMessage;

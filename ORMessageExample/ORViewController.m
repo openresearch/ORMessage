@@ -56,6 +56,8 @@
     toolbarFrame.origin.x = 0.0;
     toolbarFrame.origin.y = CGRectGetHeight(self.view.bounds) - CGRectGetHeight(toolbarFrame);
     self.toolbar.frame = toolbarFrame;
+    
+    [self.or_messageController layoutMessagesAnimated:YES];
 }
 
 - (ORMessageExampleView*)createNewMessageViewWithText:(NSString*)text
