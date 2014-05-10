@@ -1,0 +1,13 @@
+
+*.xccheckout
+
+build/
+ 
+*.xcuserstate
+ 
+.svn
+CVS
+ 
+.DS_Store
+*~.nib
+*.swp
