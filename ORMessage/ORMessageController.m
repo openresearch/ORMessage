@@ -129,6 +129,8 @@
         return;
     }
     
+    newMessage.messsageController = self;
+    
     // Setup new message
     {
         // Add touch events
@@ -552,6 +554,11 @@
             if (message.hidesWhenTouchedOutside) {
                 [messagesToRemove addObject:message];
             }
+        } else {
+            // Call block
+            if (message.touchedBlock) {
+                message.touchedBlock(message);
+            }
         }
     }
     
@@ -568,12 +575,6 @@
     {
         ORMessage* message = [self messageForMessageView:sender.view];
         if (message) {
-            
-            // Call block
-            if (message.touchedBlock) {
-                message.touchedBlock(message);
-            }
-            
             // Remove message
             if (message.hidesWhenTouched) {
                 [self removeMessage:message animated:YES];

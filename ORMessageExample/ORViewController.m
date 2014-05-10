@@ -73,7 +73,7 @@
     ORMessage* message = [ORMessage new];
     message.view = [self createNewMessageViewWithText:@"Hides when touched (Try toolbar actions)"];
     message.view.backgroundColor = [UIColor redColor];
-    message.hidesWhenTouched = YES;
+    message.hidesWhenTouched = NO;
     message.padding = 5.0;
     message.inheritsWidthFromViewController = YES;
     message.identifiers = @[@"default"];

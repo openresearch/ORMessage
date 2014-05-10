@@ -41,4 +41,7 @@ typedef NS_OPTIONS(NSInteger, ORMessageAnimationOption)
 
 @property(copy,nonatomic) void (^touchedOutsideBlock)(ORMessage* message);
 
+- (void)removeAnimated:(BOOL)animated;
+- (void)removeAfterDelay:(NSTimeInterval)delay animated:(BOOL)animated;
+
 @end

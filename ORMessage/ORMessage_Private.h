@@ -8,8 +8,11 @@
 
 #import "ORMessage.h"
 
+@class ORMessageController;
+
 @interface ORMessage ()
 
+@property(weak,nonatomic) ORMessageController* messsageController;
 @property(strong,nonatomic) NSTimer* timer;
 @property(assign,nonatomic) BOOL hidden;
 
