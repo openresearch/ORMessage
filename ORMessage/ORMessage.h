@@ -26,6 +26,7 @@ typedef NS_OPTIONS(NSInteger, ORMessageAnimationOption)
 @property(assign,nonatomic) BOOL showOnTop;
 @property(assign,nonatomic) NSTimeInterval duration;
 @property(assign,nonatomic) CGFloat padding;
+@property(assign,nonatomic) BOOL inheritsWidthFromViewController;
 @property(assign,nonatomic) ORMessageAnimationOption animationOptions;
 
 @property(readonly,nonatomic) BOOL hidden;

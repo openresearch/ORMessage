@@ -434,12 +434,11 @@
             if (topMessage != message) {
                 rect.origin.y += (CGRectGetHeight(topMessage.view.bounds) + topMessage.padding);
             } else {
-                rect.size = message.view.frame.size;
+                rect.size.height = CGRectGetHeight(message.view.bounds);
                 break;
             }
         }
         rect.origin.y += (self.messagesOffsetTop + message.padding);
-        rect.origin.x = (CGRectGetWidth(self.view.bounds) - CGRectGetWidth(rect)) / 2.0;
         
     } else if ([self isDefaultMessage:message]) {
         
@@ -449,12 +448,19 @@
             if (defaultMessage != message) {
                 rect.origin.y += (CGRectGetHeight(defaultMessage.view.bounds) + defaultMessage.padding);
             } else {
-                rect.size = message.view.frame.size;
+                rect.size.height = CGRectGetHeight(message.view.bounds);
                 break;
             }
         }
 
         rect.origin.y += message.padding;
+    }
+    
+    if (message.inheritsWidthFromViewController) {
+        rect.origin.x = 0.0;
+        rect.size.width = CGRectGetWidth(self.view.bounds);
+    } else {
+        rect.size.width = CGRectGetWidth(message.view.bounds);
         rect.origin.x = (CGRectGetWidth(self.view.bounds) - CGRectGetWidth(rect)) / 2.0;
     }
     
@@ -464,8 +470,15 @@
 - (CGRect)viewFrameForNewMessage:(ORMessage *)newMessage
 {
     CGRect rect = CGRectZero;
-    rect.origin.x = (CGRectGetWidth(self.view.frame) - CGRectGetWidth(newMessage.view.frame)) / 2.0;
-    rect.size = newMessage.view.frame.size;
+    if (newMessage.inheritsWidthFromViewController) {
+        rect.origin.x = 0.0;
+        rect.size.width = CGRectGetWidth(self.view.bounds);
+    } else {
+        rect.origin.x = (CGRectGetWidth(self.view.frame) - CGRectGetWidth(newMessage.view.frame)) / 2.0;
+        rect.size.width = CGRectGetWidth(newMessage.view.bounds);
+    }
+
+    rect.size.height = CGRectGetHeight(newMessage.view.bounds);
 
     if (newMessage.showOnTop) {
         rect.origin.y = self.messagesOffsetTop + newMessage.padding;
