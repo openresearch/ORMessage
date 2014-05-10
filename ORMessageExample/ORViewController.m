@@ -75,6 +75,7 @@
     message.view.backgroundColor = [UIColor redColor];
     message.hidesWhenTouched = YES;
     message.padding = 5.0;
+    message.inheritsWidthFromViewController = YES;
     message.identifiers = @[@"default"];
     message.animationOptions = ORMessageAnimationOptionFade;
     [self.or_messageController addMessage:message animated:YES];
