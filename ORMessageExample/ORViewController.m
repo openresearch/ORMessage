@@ -78,6 +78,10 @@
     message.inheritsWidthFromViewController = YES;
     message.identifiers = @[@"default"];
     message.animationOptions = ORMessageAnimationOptionFade;
+    message.touchedBlock = ^(ORMessage* _message) {
+        // do something
+    };
+    
     [self.or_messageController addMessage:message animated:YES];
 }
 
@@ -104,6 +108,14 @@
     message.duration = 3.0;
     message.identifiers = @[@"duration"];
     message.animationOptions = ORMessageAnimationOptionFade | ORMessageAnimationOptionMove;
+    
+    message.touchedBlock = ^(ORMessage* _message) {
+        // do something
+    };
+    message.touchedOutsideBlock = ^(ORMessage* _message) {
+        // do something
+    };
+    
     [self.or_messageController addMessage:message animated:YES];
 }
 

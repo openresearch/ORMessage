@@ -541,8 +541,17 @@
     NSMutableArray* messagesToRemove = [NSMutableArray new];
     for (ORMessage* message in self.visibleMessages) {
         CGPoint touchPoint = [touch locationInView:message.view];
-        if (!CGRectContainsPoint(message.view.bounds, touchPoint) && message.hidesWhenTouchedOutside) {
-            [messagesToRemove addObject:message];
+        if (!CGRectContainsPoint(message.view.bounds, touchPoint)) {
+            
+            // Call block
+            if (message.touchedOutsideBlock) {
+                message.touchedOutsideBlock(message);
+            }
+            
+            // Remove message
+            if (message.hidesWhenTouchedOutside) {
+                [messagesToRemove addObject:message];
+            }
         }
     }
     
@@ -558,8 +567,17 @@
     if (sender.state == UIGestureRecognizerStateEnded)
     {
         ORMessage* message = [self messageForMessageView:sender.view];
-        if (message && message.hidesWhenTouched) {
-            [self removeMessage:message animated:YES];
+        if (message) {
+            
+            // Call block
+            if (message.touchedBlock) {
+                message.touchedBlock(message);
+            }
+            
+            // Remove message
+            if (message.hidesWhenTouched) {
+                [self removeMessage:message animated:YES];
+            }
         }
     }
 }
