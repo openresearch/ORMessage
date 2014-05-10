@@ -1,12 +1,12 @@
-
-*.xccheckout
+.idea
 
 build/
  
-*.xcuserstate
+xcuserdata
  
 .svn
 CVS
+*.xccheckout
  
 .DS_Store
 *~.nib
