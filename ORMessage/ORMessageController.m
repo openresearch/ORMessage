@@ -190,6 +190,8 @@
             }
             
             [self.view addSubview:newMessage.view];
+            [self.view bringSubviewToFront:newMessage.view];
+            
             newMessage.view.alpha = animationStartAlpha;
             newMessage.view.frame = animationStartFrame;
         }
@@ -201,12 +203,12 @@
         if ([self.delegate respondsToSelector:@selector(messageController:didAddHeaderMessage:)]) {
             [self.delegate messageController:self didAddHeaderMessage:self.headerMessage];
         }
-        if ([self.delegate respondsToSelector:@selector(messageController:willShowHeaderMessage:animated:)]) {
-            [self.delegate messageController:self willShowHeaderMessage:self.headerMessage animated:animated];
-        }
     }
 
     [self layoutMessagesAnimated:animated];
+    if ([self.delegate respondsToSelector:@selector(messageController:willShowHeaderMessage:animated:)]) {
+        [self.delegate messageController:self willShowHeaderMessage:self.headerMessage animated:animated];
+    }
 }
 
 
@@ -265,13 +267,15 @@
         message.view.alpha = animationEndAlpha;
         message.view.frame = animationEndFrame;
     } completion:^(BOOL finished) {
-        [message.view removeFromSuperview];
-        
-        // Notify delegate about removed message
-        {
-            // Header message
-            if ([self.delegate respondsToSelector:@selector(messageController:didRemoveHeaderMessage:)]) {
-                [self.delegate messageController:self didRemoveHeaderMessage:self.headerMessage];
+        if (message != self.headerMessage) {
+            [message.view removeFromSuperview];
+            
+            // Notify delegate about removed message
+            {
+                // Header message
+                if ([self.delegate respondsToSelector:@selector(messageController:didRemoveHeaderMessage:)]) {
+                    [self.delegate messageController:self didRemoveHeaderMessage:self.headerMessage];
+                }
             }
         }
     }];
