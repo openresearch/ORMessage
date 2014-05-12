@@ -14,6 +14,9 @@
 
 @property(weak,nonatomic) UIViewController* viewController;
 
+@property(strong,nonatomic) ORMessage* headerMessage;
+@property(strong,nonatomic) ORMessage* footerMessage;
+
 @property(strong,nonatomic) NSMutableArray* topMessages;
 @property(strong,nonatomic) NSMutableArray* defaultMessages;
 
@@ -21,7 +24,7 @@
 @property(strong,nonatomic) NSMutableArray* hiddenDefaultMessages;
 
 // Flags
-@property(assign,nonatomic) CGFloat messagesOffsetTop;
+@property(readonly,nonatomic) CGFloat messagesOffsetTop;
 
 // Gesture recognizer
 @property(strong,nonatomic) UIGestureRecognizer* windowGestureRecognizer;
@@ -61,7 +64,7 @@
         self.hiddenDefaultMessages = [NSMutableArray new];
         
         // Messages offset
-        self.messagesOffsetTop = ({
+        self.headerMessageOffsetTop = ({
             CGFloat offset = 0.0;
             if (self.viewController.navigationController && self.viewController.navigationController.navigationBar.translucent) {
                 offset = CGRectGetMaxY(self.viewController.navigationController.navigationBar.frame);
@@ -103,9 +106,14 @@
 - (NSArray*)visibleMessages
 {
     NSMutableArray* messages = [NSMutableArray new];
+    if (self.headerMessage) {
+        [messages addObject:self.headerMessage];
+    }
     [messages addObjectsFromArray:self.topMessages];
     [messages addObjectsFromArray:self.defaultMessages];
-    
+    if (self.footerMessage) {
+        [messages addObject:self.footerMessage];
+    }
     return messages;
 }
 
@@ -165,6 +173,7 @@
             }
             
             [self.view addSubview:newMessage.view];
+
             newMessage.view.alpha = animationStartAlpha;
             newMessage.view.frame = animationStartFrame;
 
@@ -176,12 +185,13 @@
             }
         }
         
-    }
-    
-    if (newMessage.showOnTop) {
-        [self.topMessages insertObject:newMessage atIndex:0];
-    } else {
-        [self.defaultMessages addObject:newMessage];
+        if (newMessage.isHeaderMessage) {
+            // there's nothing to do
+        } else if (newMessage.showOnTop) {
+            [self.topMessages insertObject:newMessage atIndex:0];
+        } else {
+            [self.defaultMessages addObject:newMessage];
+        }
     }
     
     [self layoutMessagesExcept:newMessage animated:YES];
@@ -227,13 +237,15 @@
     }];
     
     // Remove from stack
-    if ([self isTopMessage:message]) {
+    if (message.isHeaderMessage) {
+        self.headerMessage = nil;
+    } else if ([self isTopMessage:message]) {
         [self.topMessages removeObject:message];
     } else if ([self isDefaultMessage:message]) {
         [self.defaultMessages removeObject:message];
     }
     
-    [self layoutMessagesAnimated:YES];
+    [self layoutMessagesAnimated:animated];
 }
 
 - (void)removeMessages:(NSArray *)messages animated:(BOOL)animated
@@ -401,6 +413,46 @@
 
 
 //##################################################################
+#pragma mark - Header message
+//##################################################################
+
+- (void)setHeaderMessageOffsetTop:(CGFloat)headerMessageOffsetTop
+{
+    [self setHeaderMessageOffsetTop:headerMessageOffsetTop animated:YES];
+}
+
+- (void)setHeaderMessageOffsetTop:(CGFloat)headerMessageOffsetTop animated:(BOOL)animated
+{
+    _headerMessageOffsetTop = headerMessageOffsetTop;
+    
+    [self layoutMessagesAnimated:animated];
+}
+
+- (void)addHeaderMessage:(ORMessage*)headerMessage animated:(BOOL)animated
+{
+    if (self.headerMessage) {
+        [self removeHeaderMessageAnimated:animated];
+    }
+
+    if (!headerMessage) {
+        return;
+    }
+    
+    headerMessage.isHeaderMessage = YES;
+    
+    self.headerMessage = headerMessage;
+    [self addMessage:headerMessage animated:animated];
+}
+
+- (void)removeHeaderMessageAnimated:(BOOL)animated
+{
+    if (self.headerMessage) {
+        [self removeMessage:self.headerMessage animated:animated];
+        [self layoutMessagesAnimated:animated];
+    }
+}
+
+//##################################################################
 #pragma mark - Helper
 //##################################################################
 
@@ -425,18 +477,28 @@
     } completion:NULL];
 }
 
+- (CGFloat)messagesOffsetTop
+{
+    CGFloat offsetTop = self.headerMessageOffsetTop;
+    if (self.headerMessage) {
+        offsetTop += CGRectGetHeight(self.headerMessage.view.bounds);
+    }
+    
+    return offsetTop;
+}
 
 - (CGRect)viewFrameForMessage:(ORMessage *)message
 {
     CGRect rect = CGRectZero;
     
-    if ([self isTopMessage:message]) {
+    if (message.isHeaderMessage) {
+        rect.origin.y = self.headerMessageOffsetTop;
+    } else if ([self isTopMessage:message]) {
         
         for (ORMessage* topMessage in self.topMessages) {
             if (topMessage != message) {
                 rect.origin.y += (CGRectGetHeight(topMessage.view.bounds) + topMessage.padding);
             } else {
-                rect.size.height = CGRectGetHeight(message.view.bounds);
                 break;
             }
         }
@@ -450,7 +512,6 @@
             if (defaultMessage != message) {
                 rect.origin.y += (CGRectGetHeight(defaultMessage.view.bounds) + defaultMessage.padding);
             } else {
-                rect.size.height = CGRectGetHeight(message.view.bounds);
                 break;
             }
         }
@@ -458,6 +519,8 @@
         rect.origin.y += message.padding;
     }
     
+    rect.size.height = CGRectGetHeight(message.view.bounds);
+
     if (message.inheritsWidthFromViewController) {
         rect.origin.x = 0.0;
         rect.size.width = CGRectGetWidth(self.view.bounds);
@@ -476,13 +539,15 @@
         rect.origin.x = 0.0;
         rect.size.width = CGRectGetWidth(self.view.bounds);
     } else {
-        rect.origin.x = (CGRectGetWidth(self.view.frame) - CGRectGetWidth(newMessage.view.frame)) / 2.0;
         rect.size.width = CGRectGetWidth(newMessage.view.bounds);
+        rect.origin.x = (CGRectGetWidth(self.view.frame) - CGRectGetWidth(rect)) / 2.0;
     }
 
     rect.size.height = CGRectGetHeight(newMessage.view.bounds);
 
-    if (newMessage.showOnTop) {
+    if (newMessage.isHeaderMessage) {
+        rect.origin.y = self.headerMessageOffsetTop;
+    } else if (newMessage.showOnTop) {
         rect.origin.y = self.messagesOffsetTop + newMessage.padding;
     } else {
         rect.origin.y = [self defaultMessagesMaxY] + newMessage.padding;

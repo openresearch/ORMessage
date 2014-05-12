@@ -42,6 +42,9 @@
     NSMutableArray* toolbarItems = [NSMutableArray new];
     [toolbarItems addObject:[[UIBarButtonItem alloc] initWithTitle:@"Show" style:UIBarButtonItemStyleBordered target:self action:@selector(showMessages)]];
     [toolbarItems addObject:[[UIBarButtonItem alloc] initWithTitle:@"Hide" style:UIBarButtonItemStyleBordered target:self action:@selector(hideMessages)]];
+    [toolbarItems addObject:[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil]];
+    [toolbarItems addObject:[[UIBarButtonItem alloc] initWithTitle:@"Header On" style:UIBarButtonItemStyleBordered target:self action:@selector(addHeaderMessage)]];
+    [toolbarItems addObject:[[UIBarButtonItem alloc] initWithTitle:@"Header Off" style:UIBarButtonItemStyleBordered target:self action:@selector(removeHeaderMessage)]];
     [self.toolbar setItems:toolbarItems];
     [self.view addSubview:self.toolbar];
 }
@@ -73,11 +76,11 @@
     ORMessage* message = [ORMessage new];
     message.view = [self createNewMessageViewWithText:@"Hides when touched (Try toolbar actions)"];
     message.view.backgroundColor = [UIColor redColor];
-    message.hidesWhenTouched = NO;
+    message.hidesWhenTouched = YES;
     message.padding = 5.0;
     message.inheritsWidthFromViewController = YES;
     message.identifiers = @[@"default"];
-    message.animationOptions = ORMessageAnimationOptionFade;
+    message.animationOptions = ORMessageAnimationOptionFade | ORMessageAnimationOptionMove;
     message.touchedBlock = ^(ORMessage* _message) {
         // do something
     };
@@ -124,15 +127,51 @@
     [self.or_messageController removeMessagesWithIdentifiers:@[@"default", @"top", @"duration"] animated:YES];
 }
 
+
+//##################################################################
+#pragma mark - Show / hide
+//##################################################################
 - (void)showMessages
 {
-    [self.or_messageController showMessagesWithIdentifiers:@[@"default"] animated:YES];
+    CGFloat offset = self.or_messageController.headerMessageOffsetTop;
+    [self.or_messageController setHeaderMessageOffsetTop:offset+10 animated:YES];
+//    [self.or_messageController showMessagesWithIdentifiers:@[@"default"] animated:YES];
 }
 
 - (void)hideMessages
 {
-    [self.or_messageController hideMessagesWithIdentifiers:@[@"default"] animated:YES];
+    CGFloat offset = self.or_messageController.headerMessageOffsetTop;
+    [self.or_messageController setHeaderMessageOffsetTop:offset-10 animated:YES];
+//    [self.or_messageController hideMessagesWithIdentifiers:@[@"default"] animated:YES];
 }
 
+
+//##################################################################
+#pragma mark - Header message
+//##################################################################
+
+- (void)addHeaderMessage
+{
+    ORMessage* message = [ORMessage new];
+    message.view = [self createNewMessageViewWithText:@"Header"];
+    message.view.backgroundColor = [UIColor yellowColor];
+    message.padding = 5.0;
+    message.identifiers = @[@"header"];
+    message.animationOptions = ORMessageAnimationOptionFade | ORMessageAnimationOptionMove;
+    
+    message.touchedBlock = ^(ORMessage* _message) {
+        // do something
+    };
+    message.touchedOutsideBlock = ^(ORMessage* _message) {
+        // do something
+    };
+    
+    [self.or_messageController addHeaderMessage:message animated:YES];
+}
+
+- (void)removeHeaderMessage
+{
+    [self.or_messageController removeHeaderMessageAnimated:YES];
+}
 
 @end
