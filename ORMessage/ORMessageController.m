@@ -510,6 +510,20 @@
 {
     CGRect rect = CGRectZero;
     
+    if (message.inheritsWidthFromViewController) {
+        rect.origin.x = 0.0;
+        rect.size.width = CGRectGetWidth(self.view.bounds);
+    } else {
+        rect.size.width = CGRectGetWidth(message.view.bounds);
+        rect.origin.x = (CGRectGetWidth(self.view.bounds) - CGRectGetWidth(rect)) / 2.0;
+    }
+    
+    if ([message.delegate respondsToSelector:@selector(message:viewHeightForWidth:)]) {
+        rect.size.height = [message.delegate message:message viewHeightForWidth:CGRectGetWidth(rect)];
+    } else {
+        rect.size.height = CGRectGetHeight(message.view.bounds);
+    }
+    
     if (message.isHeaderMessage) {
         rect.origin.y = self.messagesOffsetTop;
     } else if ([self isTopMessage:message]) {
@@ -538,18 +552,13 @@
         rect.origin.y += message.padding;
     }
     
-    rect.size.height = CGRectGetHeight(message.view.bounds);
-
-    if (message.inheritsWidthFromViewController) {
-        rect.origin.x = 0.0;
-        rect.size.width = CGRectGetWidth(self.view.bounds);
-    } else {
-        rect.size.width = CGRectGetWidth(message.view.bounds);
-        rect.origin.x = (CGRectGetWidth(self.view.bounds) - CGRectGetWidth(rect)) / 2.0;
-    }
-    
     return rect;
 }
+
+//CGFloat messageViewHeight = 0.0;
+//if ([topMessage.delegate respondsToSelector:@selector(message:viewHeightForWidth:)]) {
+//    messageViewHeight = topMessage.delegate message:topMessage viewHeightForWidth:<#(CGFloat)#>
+//}
 
 - (CGRect)viewFrameForNewMessage:(ORMessage *)newMessage
 {
