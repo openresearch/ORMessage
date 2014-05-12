@@ -25,4 +25,29 @@ static void* const ORMessageControllerObjectKey = "ORMessageControllerObjectKey"
     return messageController;
 }
 
+
+//##################################################################
+#pragma mark - ORMessageControllerDelegate
+//##################################################################
+
+- (void)messageController:(ORMessageController *)messageController didAddHeaderMessage:(ORMessage *)message
+{
+    NSLog(@"didAddHeaderMessage");
+}
+
+- (void)messageController:(ORMessageController *)messageController didRemoveHeaderMessage:(ORMessage*)message
+{
+    NSLog(@"didRemoveHeaderMessage");
+}
+
+- (void)messageController:(ORMessageController *)messageController willShowHeaderMessage:(ORMessage *)message animated:(BOOL)animated
+{
+    NSLog(@"willShowHeaderMessage");
+}
+
+- (void)messageController:(ORMessageController *)messageController willHideHeaderMessage:(ORMessage *)message animated:(BOOL)animated
+{
+    NSLog(@"willHideHeaderMessage");
+}
+
 @end

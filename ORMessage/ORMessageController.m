@@ -8,7 +8,7 @@
 
 #import "ORMessageController.h"
 #import "ORMessage_Private.h"
-
+#import "UIViewController+ORMessage.h"
 
 @interface ORMessageController () <UIGestureRecognizerDelegate>
 
@@ -56,6 +56,7 @@
     self = [super init];
     if (self) {
         self.viewController = viewController;
+        self.delegate = self.viewController;
         
         self.topMessages = [NSMutableArray new];
         self.defaultMessages = [NSMutableArray new];
@@ -126,6 +127,18 @@
     return messages;
 }
 
+- (void)setMessagesOffsetTop:(CGFloat)offset
+{
+    [self setMessagesOffsetTop:offset animated:YES];
+}
+
+- (void)setMessagesOffsetTop:(CGFloat)offset animated:(BOOL)animated
+{
+    _messagesOffsetTop = offset;
+    
+    [self layoutMessagesAnimated:animated];
+}
+
 
 //##################################################################
 #pragma mark - Add messages
@@ -154,15 +167,19 @@
             }
         }
         
+        if (newMessage.isHeaderMessage) {
+            self.headerMessage = newMessage;
+        } else if (newMessage.showOnTop) {
+            [self.topMessages insertObject:newMessage atIndex:0];
+        } else {
+            [self.defaultMessages addObject:newMessage];
+        }
+        
         // Show message (animated)
         {
-            // Animation end values
-            CGFloat animationEndAlpha = 1.0;
-            CGRect animationEndFrame = [self viewFrameForNewMessage:newMessage];
-            
             // Animation start values
             CGFloat animationStartAlpha = 1.0;
-            CGRect animationStartFrame = [self viewFrameForNewMessage:newMessage];
+            CGRect animationStartFrame = [self viewFrameForMessage:newMessage];
 
             if (animated && (newMessage.animationOptions & ORMessageAnimationOptionFade) == ORMessageAnimationOptionFade) {
                 animationStartAlpha = 0.0;
@@ -173,28 +190,23 @@
             }
             
             [self.view addSubview:newMessage.view];
-
             newMessage.view.alpha = animationStartAlpha;
             newMessage.view.frame = animationStartFrame;
-
-            if (animated) {
-                [UIView animateWithDuration:self.defaultAnimationDuration animations:^{
-                    newMessage.view.alpha = animationEndAlpha;
-                    newMessage.view.frame = animationEndFrame;
-                }];
-            }
-        }
-        
-        if (newMessage.isHeaderMessage) {
-            // there's nothing to do
-        } else if (newMessage.showOnTop) {
-            [self.topMessages insertObject:newMessage atIndex:0];
-        } else {
-            [self.defaultMessages addObject:newMessage];
         }
     }
     
-    [self layoutMessagesExcept:newMessage animated:YES];
+    // Notify delegates about new message
+    if (newMessage.isHeaderMessage) {
+        // Header message
+        if ([self.delegate respondsToSelector:@selector(messageController:didAddHeaderMessage:)]) {
+            [self.delegate messageController:self didAddHeaderMessage:self.headerMessage];
+        }
+        if ([self.delegate respondsToSelector:@selector(messageController:willShowHeaderMessage:animated:)]) {
+            [self.delegate messageController:self willShowHeaderMessage:self.headerMessage animated:animated];
+        }
+    }
+
+    [self layoutMessagesAnimated:animated];
 }
 
 
@@ -229,13 +241,6 @@
         animationEndFrame.origin.y -= CGRectGetHeight(animationEndFrame);
     }
     
-    [UIView animateWithDuration:(animated ? self.defaultAnimationDuration : 0.0) delay:0.0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
-        message.view.alpha = animationEndAlpha;
-        message.view.frame = animationEndFrame;
-    } completion:^(BOOL finished) {
-        [message.view removeFromSuperview];
-    }];
-    
     // Remove from stack
     if (message.isHeaderMessage) {
         self.headerMessage = nil;
@@ -244,6 +249,32 @@
     } else if ([self isDefaultMessage:message]) {
         [self.defaultMessages removeObject:message];
     }
+    
+    
+    // Notify delegate about hidden message
+    {
+        // Header message
+        if (message.isHeaderMessage) {
+            if ([self.delegate respondsToSelector:@selector(messageController:willHideHeaderMessage:animated:)]) {
+                [self.delegate messageController:self willHideHeaderMessage:self.headerMessage animated:animated];
+            }
+        }
+    }
+    
+    [UIView animateWithDuration:(animated ? self.defaultAnimationDuration : 0.0) delay:0.0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
+        message.view.alpha = animationEndAlpha;
+        message.view.frame = animationEndFrame;
+    } completion:^(BOOL finished) {
+        [message.view removeFromSuperview];
+        
+        // Notify delegate about removed message
+        {
+            // Header message
+            if ([self.delegate respondsToSelector:@selector(messageController:didRemoveHeaderMessage:)]) {
+                [self.delegate messageController:self didRemoveHeaderMessage:self.headerMessage];
+            }
+        }
+    }];
     
     [self layoutMessagesAnimated:animated];
 }
@@ -416,18 +447,6 @@
 #pragma mark - Header message
 //##################################################################
 
-- (void)setMessagesOffsetTop:(CGFloat)offset
-{
-    [self setMessagesOffsetTop:offset animated:YES];
-}
-
-- (void)setMessagesOffsetTop:(CGFloat)offset animated:(BOOL)animated
-{
-    _messagesOffsetTop = offset;
-    
-    [self layoutMessagesAnimated:animated];
-}
-
 - (void)addHeaderMessage:(ORMessage*)headerMessage animated:(BOOL)animated
 {
     if (self.headerMessage) {
@@ -440,7 +459,6 @@
     
     headerMessage.isHeaderMessage = YES;
     
-    self.headerMessage = headerMessage;
     [self addMessage:headerMessage animated:animated];
 }
 
@@ -472,6 +490,7 @@
         for (ORMessage* message in self.visibleMessages) {
             if (message != exceptedMessage) {
                 message.view.frame = [self viewFrameForMessage:message];
+                message.view.alpha = 1.0;
             }
         }
     } completion:NULL];

@@ -10,7 +10,11 @@
 
 #import "ORMessage.h"
 
+@protocol ORMessageControllerDelegate;
+
 @interface ORMessageController : NSObject
+
+@property(weak,nonatomic) id<ORMessageControllerDelegate> delegate;
 
 @property(readonly,nonatomic) NSArray* messages;
 @property(readonly,nonatomic) NSArray* visibleMessages;
@@ -61,5 +65,17 @@
 //##################################################################
 
 - (id)initWithViewController:(UIViewController*)viewController;
+
+@end
+
+
+@protocol ORMessageControllerDelegate <NSObject>
+
+@optional
+- (void)messageController:(ORMessageController *)messageController didAddHeaderMessage:(ORMessage *)message;
+- (void)messageController:(ORMessageController *)messageController didRemoveHeaderMessage:(ORMessage*)message;
+
+- (void)messageController:(ORMessageController *)messageController willShowHeaderMessage:(ORMessage *)message animated:(BOOL)animated;
+- (void)messageController:(ORMessageController *)messageController willHideHeaderMessage:(ORMessage *)message animated:(BOOL)animated;
 
 @end

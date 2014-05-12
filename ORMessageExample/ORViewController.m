@@ -124,7 +124,7 @@
 
 - (void)removeAllMessages
 {
-    [self.or_messageController removeMessagesWithIdentifiers:@[@"default", @"top", @"duration"] animated:YES];
+    [self.or_messageController removeMessagesWithIdentifiers:@[@"default", @"top", @"duration", @"header"] animated:YES];
 }
 
 

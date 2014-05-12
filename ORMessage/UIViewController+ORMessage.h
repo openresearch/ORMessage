@@ -10,7 +10,7 @@
 
 #import "ORMessageController.h"
 
-@interface UIViewController (ORMessage)
+@interface UIViewController (ORMessage) <ORMessageControllerDelegate>
 
 @property(readonly,nonatomic) ORMessageController* or_messageController;
 
