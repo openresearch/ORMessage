@@ -24,7 +24,7 @@
 @property(strong,nonatomic) NSMutableArray* hiddenDefaultMessages;
 
 // Flags
-@property(readonly,nonatomic) CGFloat messagesOffsetTop;
+@property(readonly,nonatomic) CGFloat offsetTop;
 
 // Gesture recognizer
 @property(strong,nonatomic) UIGestureRecognizer* windowGestureRecognizer;
@@ -64,7 +64,7 @@
         self.hiddenDefaultMessages = [NSMutableArray new];
         
         // Messages offset
-        self.headerMessageOffsetTop = ({
+        self.messagesOffsetTop = ({
             CGFloat offset = 0.0;
             if (self.viewController.navigationController && self.viewController.navigationController.navigationBar.translucent) {
                 offset = CGRectGetMaxY(self.viewController.navigationController.navigationBar.frame);
@@ -416,14 +416,14 @@
 #pragma mark - Header message
 //##################################################################
 
-- (void)setHeaderMessageOffsetTop:(CGFloat)headerMessageOffsetTop
+- (void)setMessagesOffsetTop:(CGFloat)offset
 {
-    [self setHeaderMessageOffsetTop:headerMessageOffsetTop animated:YES];
+    [self setMessagesOffsetTop:offset animated:YES];
 }
 
-- (void)setHeaderMessageOffsetTop:(CGFloat)headerMessageOffsetTop animated:(BOOL)animated
+- (void)setMessagesOffsetTop:(CGFloat)offset animated:(BOOL)animated
 {
-    _headerMessageOffsetTop = headerMessageOffsetTop;
+    _messagesOffsetTop = offset;
     
     [self layoutMessagesAnimated:animated];
 }
@@ -477,9 +477,9 @@
     } completion:NULL];
 }
 
-- (CGFloat)messagesOffsetTop
+- (CGFloat)offsetTop
 {
-    CGFloat offsetTop = self.headerMessageOffsetTop;
+    CGFloat offsetTop = self.messagesOffsetTop;
     if (self.headerMessage) {
         offsetTop += CGRectGetHeight(self.headerMessage.view.bounds);
     }
@@ -492,7 +492,7 @@
     CGRect rect = CGRectZero;
     
     if (message.isHeaderMessage) {
-        rect.origin.y = self.headerMessageOffsetTop;
+        rect.origin.y = self.messagesOffsetTop;
     } else if ([self isTopMessage:message]) {
         
         for (ORMessage* topMessage in self.topMessages) {
@@ -502,7 +502,7 @@
                 break;
             }
         }
-        rect.origin.y += (self.messagesOffsetTop + message.padding);
+        rect.origin.y += (self.offsetTop + message.padding);
         
     } else if ([self isDefaultMessage:message]) {
         
@@ -546,9 +546,9 @@
     rect.size.height = CGRectGetHeight(newMessage.view.bounds);
 
     if (newMessage.isHeaderMessage) {
-        rect.origin.y = self.headerMessageOffsetTop;
+        rect.origin.y = self.messagesOffsetTop;
     } else if (newMessage.showOnTop) {
-        rect.origin.y = self.messagesOffsetTop + newMessage.padding;
+        rect.origin.y = self.offsetTop + newMessage.padding;
     } else {
         rect.origin.y = [self defaultMessagesMaxY] + newMessage.padding;
     }
@@ -563,7 +563,7 @@
         return CGRectGetMaxY(oldestTopMessage.view.frame);
     }
     
-    return self.messagesOffsetTop;
+    return self.offsetTop;
 }
 
 - (CGFloat)defaultMessagesMaxY

@@ -16,13 +16,10 @@
 @property(readonly,nonatomic) NSArray* visibleMessages;
 @property(readonly,nonatomic) NSArray* hiddenMessages;
 
+@property(assign,nonatomic) CGFloat messagesOffsetTop;
+- (void)setMessagesOffsetTop:(CGFloat)offset animated:(BOOL)animated;
+
 @property(readonly,weak,nonatomic) UIViewController* viewController;
-
-@property(assign,nonatomic) CGFloat headerMessageOffsetTop;
-- (void)setHeaderMessageOffsetTop:(CGFloat)headerMessageOffsetTop animated:(BOOL)animated;
-
-@property(assign,nonatomic) CGFloat footerMessageOffsetBottom;
-- (void)setFooterMessageOffsetBottom:(CGFloat)footerMessageOffsetBottom animated:(BOOL)animated;
 
 @property(assign,nonatomic) CGFloat defaultAnimationDuration;
 
@@ -51,13 +48,6 @@
 - (void)addHeaderMessage:(ORMessage*)headerMessage animated:(BOOL)animated;
 - (void)removeHeaderMessageAnimated:(BOOL)animated;
 
-//##################################################################
-#pragma mark - Footer message
-//##################################################################
-
-//@property(readonly,nonatomic) ORMessage* footerMessage;
-//- (void)addFooterMessage:(ORMessage*)footerMessage animated:(BOOL)animated;
-//- (void)removeFooterMessageAnimated:(BOOL)animated;
 
 //##################################################################
 #pragma mark - Layout messages

@@ -14,6 +14,4 @@
 
 @property(readonly,nonatomic) ORMessageController* or_messageController;
 
-- (void)or_willAddMessages:(NSArray*)messages animated:(BOOL)animated;
-
 @end

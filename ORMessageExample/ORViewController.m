@@ -133,15 +133,15 @@
 //##################################################################
 - (void)showMessages
 {
-    CGFloat offset = self.or_messageController.headerMessageOffsetTop;
-    [self.or_messageController setHeaderMessageOffsetTop:offset+10 animated:YES];
+    CGFloat offset = self.or_messageController.messagesOffsetTop;
+    [self.or_messageController setMessagesOffsetTop:offset+10 animated:YES];
 //    [self.or_messageController showMessagesWithIdentifiers:@[@"default"] animated:YES];
 }
 
 - (void)hideMessages
 {
-    CGFloat offset = self.or_messageController.headerMessageOffsetTop;
-    [self.or_messageController setHeaderMessageOffsetTop:offset-10 animated:YES];
+    CGFloat offset = self.or_messageController.messagesOffsetTop;
+    [self.or_messageController setMessagesOffsetTop:offset-10 animated:YES];
 //    [self.or_messageController hideMessagesWithIdentifiers:@[@"default"] animated:YES];
 }
 
