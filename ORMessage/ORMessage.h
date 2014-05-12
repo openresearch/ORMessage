@@ -8,6 +8,13 @@
 
 #import <Foundation/Foundation.h>
 
+@class ORMessage;
+
+@protocol ORMessageViewDelegate <NSObject>
+@optional
+- (CGFloat)message:(ORMessage*)message viewHeightForWidth:(CGFloat)width;
+@end
+
 typedef NS_OPTIONS(NSInteger, ORMessageAnimationOption)
 {
     ORMessageAnimationOptionNone            = 0,
@@ -16,6 +23,8 @@ typedef NS_OPTIONS(NSInteger, ORMessageAnimationOption)
 };
 
 @interface ORMessage : NSObject
+
+@property(weak,nonatomic) id<ORMessageViewDelegate> delegate;
 
 @property(strong,nonatomic) NSArray* identifiers;
 
@@ -45,3 +54,4 @@ typedef NS_OPTIONS(NSInteger, ORMessageAnimationOption)
 - (void)removeAfterDelay:(NSTimeInterval)delay animated:(BOOL)animated;
 
 @end
+
