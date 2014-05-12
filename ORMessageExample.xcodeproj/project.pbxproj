@@ -36,13 +36,13 @@
 		E8727EE0191E979900700E29 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		E8727EF7191E98A500700E29 /* ORMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ORMessage.h; sourceTree = "<group>"; };
 		E8727EF8191E98A500700E29 /* ORMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ORMessage.m; sourceTree = "<group>"; };
-		E8727EF9191E98A500700E29 /* ORMessage_Private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ORMessage_Private.h; sourceTree = "<group>"; };
 		E8727EFA191E98A500700E29 /* ORMessageController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ORMessageController.h; sourceTree = "<group>"; };
 		E8727EFB191E98A500700E29 /* ORMessageController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ORMessageController.m; sourceTree = "<group>"; };
 		E8727EFC191E98A500700E29 /* UIViewController+ORMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+ORMessage.h"; sourceTree = "<group>"; };
 		E8727EFD191E98A500700E29 /* UIViewController+ORMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+ORMessage.m"; sourceTree = "<group>"; };
 		E8727F01191E98D300700E29 /* ORMessageExampleView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ORMessageExampleView.h; sourceTree = "<group>"; };
 		E8727F02191E98D300700E29 /* ORMessageExampleView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ORMessageExampleView.m; sourceTree = "<group>"; };
+		E87E2A4919213A8800F3EDB0 /* ORMessage_Private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ORMessage_Private.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -116,15 +116,23 @@
 		E8727EF6191E98A500700E29 /* ORMessage */ = {
 			isa = PBXGroup;
 			children = (
+				E87E2A4819213A8800F3EDB0 /* Private */,
 				E8727EF7191E98A500700E29 /* ORMessage.h */,
 				E8727EF8191E98A500700E29 /* ORMessage.m */,
-				E8727EF9191E98A500700E29 /* ORMessage_Private.h */,
 				E8727EFA191E98A500700E29 /* ORMessageController.h */,
 				E8727EFB191E98A500700E29 /* ORMessageController.m */,
 				E8727EFC191E98A500700E29 /* UIViewController+ORMessage.h */,
 				E8727EFD191E98A500700E29 /* UIViewController+ORMessage.m */,
 			);
 			path = ORMessage;
+			sourceTree = "<group>";
+		};
+		E87E2A4819213A8800F3EDB0 /* Private */ = {
+			isa = PBXGroup;
+			children = (
+				E87E2A4919213A8800F3EDB0 /* ORMessage_Private.h */,
+			);
+			path = Private;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -332,6 +340,7 @@
 				E8727EF2191E979900700E29 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
