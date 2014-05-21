@@ -130,6 +130,20 @@
     return messages;
 }
 
+- (NSArray*)messagesWithIdentifiers:(NSArray *)identifiers
+{
+    NSMutableArray* foundMessages = [NSMutableArray new];
+    for (ORMessage* message in self.messages) {
+        for (NSString* identifier in identifiers) {
+            if ([message.identifiers containsObject:identifier]) {
+                [foundMessages addObject:message];
+            }
+        }
+    }
+    
+    return foundMessages;
+}
+
 - (void)setMessagesOffsetTop:(CGFloat)offset
 {
     [self setMessagesOffsetTop:offset animated:YES];

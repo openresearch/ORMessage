@@ -20,6 +20,8 @@
 @property(readonly,nonatomic) NSArray* visibleMessages;
 @property(readonly,nonatomic) NSArray* hiddenMessages;
 
+- (NSArray*)messagesWithIdentifiers:(NSArray*)identifiers;
+
 @property(readonly,nonatomic) CGFloat messagesMaxY;
 
 @property(assign,nonatomic) CGFloat messagesOffsetTop;
