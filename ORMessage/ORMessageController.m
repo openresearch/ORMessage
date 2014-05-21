@@ -47,6 +47,9 @@
 // Timer events
 - (void)messageDurationExpired:(NSTimer*)timer;
 
+// Delegate helper
+- (void)notifyDelegateMessagesLayoutChangedAnimated:(BOOL)animated;
+
 @end
 
 @implementation ORMessageController
@@ -209,6 +212,8 @@
     if ([self.delegate respondsToSelector:@selector(messageController:willShowHeaderMessage:animated:)]) {
         [self.delegate messageController:self willShowHeaderMessage:self.headerMessage animated:animated];
     }
+    
+    [self notifyDelegateMessagesLayoutChangedAnimated:animated];
 }
 
 
@@ -281,6 +286,8 @@
     }];
     
     [self layoutMessagesAnimated:animated];
+    
+    [self notifyDelegateMessagesLayoutChangedAnimated:animated];
 }
 
 - (void)removeMessages:(NSArray *)messages animated:(BOOL)animated
@@ -319,6 +326,8 @@
 - (void)showMessage:(ORMessage*)message animated:(BOOL)animated
 {
     [self _showMessage:message animated:animated layoutMessages:YES];
+    
+    [self notifyDelegateMessagesLayoutChangedAnimated:animated];
 }
 
 - (void)_showMessage:(ORMessage*)message animated:(BOOL)animated layoutMessages:(BOOL)layoutMessages
@@ -358,6 +367,8 @@
     }
     
     [self layoutMessagesAnimated:animated];
+    
+    [self notifyDelegateMessagesLayoutChangedAnimated:animated];
 }
 
 - (void)showMessages:(NSArray *)messages animated:(BOOL)animated
@@ -367,6 +378,8 @@
     }
     
     [self layoutMessagesAnimated:animated];
+    
+    [self notifyDelegateMessagesLayoutChangedAnimated:animated];
 }
 
 - (void)showMessagesWithIdentifiers:(NSArray*)identifiers animated:(BOOL)animated
@@ -386,6 +399,8 @@
 - (void)hideMessage:(ORMessage*)message animated:(BOOL)animated
 {
     [self _hideMessage:message animated:animated layoutMessages:YES];
+    
+    [self notifyDelegateMessagesLayoutChangedAnimated:animated];
 }
 
 - (void)_hideMessage:(ORMessage*)message animated:(BOOL)animated layoutMessages:(BOOL)layoutMessages
@@ -425,6 +440,8 @@
     }
     
     [self layoutMessagesAnimated:animated];
+    
+    [self notifyDelegateMessagesLayoutChangedAnimated:animated];
 }
 
 - (void)hideMessagesWithIdentifiers:(NSArray*)identifiers animated:(BOOL)animated
@@ -471,6 +488,8 @@
     if (self.headerMessage) {
         [self removeMessage:self.headerMessage animated:animated];
         [self layoutMessagesAnimated:animated];
+        
+        [self notifyDelegateMessagesLayoutChangedAnimated:animated];
     }
 }
 
@@ -508,6 +527,11 @@
     }
     
     return offsetTop;
+}
+
+- (CGFloat)messagesMaxY
+{
+    return self.defaultMessagesMaxY;
 }
 
 - (CGRect)viewFrameForMessage:(ORMessage *)message
@@ -694,5 +718,16 @@
     }
 }
 
+
+//##################################################################
+#pragma mark - Delegate helper
+//##################################################################
+
+- (void)notifyDelegateMessagesLayoutChangedAnimated:(BOOL)animated
+{
+    if ([self.delegate respondsToSelector:@selector(messagesLayoutChanged:animated:)]) {
+        [self.delegate messagesLayoutChanged:self animated:animated];
+    }
+}
 
 @end

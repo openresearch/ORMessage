@@ -20,6 +20,8 @@
 @property(readonly,nonatomic) NSArray* visibleMessages;
 @property(readonly,nonatomic) NSArray* hiddenMessages;
 
+@property(readonly,nonatomic) CGFloat messagesMaxY;
+
 @property(assign,nonatomic) CGFloat messagesOffsetTop;
 - (void)setMessagesOffsetTop:(CGFloat)offset animated:(BOOL)animated;
 
@@ -72,6 +74,8 @@
 @protocol ORMessageControllerDelegate <NSObject>
 
 @optional
+- (void)messagesLayoutChanged:(ORMessageController*)messageController animated:(BOOL)animated;
+
 - (void)messageController:(ORMessageController *)messageController didAddHeaderMessage:(ORMessage *)message;
 - (void)messageController:(ORMessageController *)messageController didRemoveHeaderMessage:(ORMessage*)message;
 
