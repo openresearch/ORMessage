@@ -554,10 +554,18 @@
     
     if (message.inheritsWidthFromViewController) {
         rect.origin.x = 0.0;
-        rect.size.width = CGRectGetWidth(self.view.bounds);
+        if (message.widthLayoutReferenceView) {
+            rect.size.width = CGRectGetWidth(message.widthLayoutReferenceView.bounds);
+        } else {
+            rect.size.width = CGRectGetWidth(self.view.bounds);
+        }
     } else {
         rect.size.width = CGRectGetWidth(message.view.bounds);
-        rect.origin.x = (CGRectGetWidth(self.view.bounds) - CGRectGetWidth(rect)) / 2.0;
+        if (message.widthLayoutReferenceView) {
+            rect.origin.x = (CGRectGetWidth(message.widthLayoutReferenceView.bounds) - CGRectGetWidth(rect)) / 2.0;
+        } else {
+            rect.origin.x = (CGRectGetWidth(self.view.bounds) - CGRectGetWidth(rect)) / 2.0;
+        }
     }
     
     if ([message.delegate respondsToSelector:@selector(message:viewHeightForWidth:)]) {
@@ -597,20 +605,24 @@
     return rect;
 }
 
-//CGFloat messageViewHeight = 0.0;
-//if ([topMessage.delegate respondsToSelector:@selector(message:viewHeightForWidth:)]) {
-//    messageViewHeight = topMessage.delegate message:topMessage viewHeightForWidth:<#(CGFloat)#>
-//}
-
 - (CGRect)viewFrameForNewMessage:(ORMessage *)newMessage
 {
     CGRect rect = CGRectZero;
+    
     if (newMessage.inheritsWidthFromViewController) {
         rect.origin.x = 0.0;
-        rect.size.width = CGRectGetWidth(self.view.bounds);
+        if (newMessage.widthLayoutReferenceView) {
+            rect.size.width = CGRectGetWidth(newMessage.widthLayoutReferenceView.bounds);
+        } else {
+            rect.size.width = CGRectGetWidth(self.view.bounds);
+        }
     } else {
         rect.size.width = CGRectGetWidth(newMessage.view.bounds);
-        rect.origin.x = (CGRectGetWidth(self.view.frame) - CGRectGetWidth(rect)) / 2.0;
+        if (newMessage.widthLayoutReferenceView) {
+            rect.origin.x = (CGRectGetWidth(newMessage.widthLayoutReferenceView.bounds) - CGRectGetWidth(rect)) / 2.0;
+        } else {
+            rect.origin.x = (CGRectGetWidth(self.view.bounds) - CGRectGetWidth(rect)) / 2.0;
+        }
     }
 
     rect.size.height = CGRectGetHeight(newMessage.view.bounds);

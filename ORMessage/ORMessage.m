@@ -13,6 +13,17 @@
 
 @implementation ORMessage
 
+- (void)dealloc
+{
+    if (self.widthLayoutReferenceView) {
+        [self.widthLayoutReferenceView removeObserver:self forKeyPath:@"frame"];
+    }
+}
+
+//##################################################################
+#pragma mark - Public
+//##################################################################
+
 - (void)removeAnimated:(BOOL)animated
 {
     [self.messsageController removeMessage:self animated:animated];
@@ -26,5 +37,29 @@
     });
 }
 
+- (void)setWidthLayoutReferenceView:(UIView *)widthLayoutReferenceView
+{
+    if (_widthLayoutReferenceView) {
+        [_widthLayoutReferenceView removeObserver:self forKeyPath:@"frame"];
+    }
+    
+    _widthLayoutReferenceView = widthLayoutReferenceView;
+    
+    if (_widthLayoutReferenceView) {
+        [_widthLayoutReferenceView addObserver:self forKeyPath:@"frame" options:NSKeyValueObservingOptionNew context:nil];
+    }
+}
+
+
+//##################################################################
+#pragma mark - KVO event
+//##################################################################
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    if ([keyPath isEqualToString:@"frame"]) {
+        [self.messsageController layoutMessagesAnimated:YES];
+    }
+}
 
 @end
