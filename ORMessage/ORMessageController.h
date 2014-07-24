@@ -22,6 +22,7 @@
 
 - (NSArray*)messagesWithIdentifiers:(NSArray*)identifiers;
 
+@property(readonly,nonatomic) CGFloat topMessagesMaxY;
 @property(readonly,nonatomic) CGFloat messagesMaxY;
 
 @property(assign,nonatomic) CGFloat messagesOffsetTop;

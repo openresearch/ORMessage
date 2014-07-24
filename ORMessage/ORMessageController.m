@@ -36,7 +36,6 @@
 
 - (CGRect)viewFrameForNewMessage:(ORMessage*)newMessage;
 - (CGRect)viewFrameForMessage:(ORMessage*)message;
-- (CGFloat)topMessagesMaxY;
 - (CGFloat)defaultMessagesMaxY;
 - (BOOL)isTopMessage:(ORMessage*)message;
 - (BOOL)isDefaultMessage:(ORMessage*)message;
