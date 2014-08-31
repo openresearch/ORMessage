@@ -14,7 +14,6 @@
 
 @property(weak,nonatomic) ORMessageController* messsageController;
 @property(strong,nonatomic) NSTimer* timer;
-@property(assign,nonatomic) BOOL hidden;
 @property(assign,nonatomic) BOOL isHeaderMessage;
 
 @end

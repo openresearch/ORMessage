@@ -243,7 +243,7 @@
     // Invalidate timer
     [message.timer invalidate];
 
-    if (message.hidden) {
+    if ([self isMessageHidden:message]) {
         [self.hiddenTopMessages removeObject:message];
         [self.hiddenDefaultMessages removeObject:message];
         return;
@@ -345,11 +345,9 @@
 
 - (void)_showMessage:(ORMessage*)message animated:(BOOL)animated layoutMessages:(BOOL)layoutMessages
 {
-    if (!message || !message.hidden) {
+    if (!message || ![self isMessageHidden:message]) {
         return;
     }
-    
-    message.hidden = NO;
     
     if (message.showOnTop) {
         [self.topMessages insertObject:message atIndex:0];
@@ -418,11 +416,9 @@
 
 - (void)_hideMessage:(ORMessage*)message animated:(BOOL)animated layoutMessages:(BOOL)layoutMessages
 {
-    if (!message || message.hidden) {
+    if (!message || [self isMessageHidden:message]) {
         return;
     }
-    
-    message.hidden = YES;
     
     if (message.showOnTop) {
         [self.hiddenTopMessages insertObject:message atIndex:0];
@@ -678,6 +674,11 @@
     }
     
     return nil;
+}
+
+- (BOOL)isMessageHidden:(ORMessage*)message
+{
+    return ([self.hiddenDefaultMessages indexOfObject:message] != NSNotFound || [self.hiddenTopMessages indexOfObject:message] != NSNotFound);
 }
 
 //##################################################################

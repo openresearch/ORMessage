@@ -44,8 +44,6 @@ typedef NS_OPTIONS(NSInteger, ORMessageAnimationOption)
 
 @property(assign,nonatomic) ORMessageAnimationOption animationOptions;
 
-@property(readonly,nonatomic) BOOL hidden;
-
 @property(copy,nonatomic) void (^touchedBlock)(ORMessage* message);
 
 @property(copy,nonatomic) void (^touchedOutsideBlock)(ORMessage* message);
