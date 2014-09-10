@@ -162,14 +162,23 @@
 
 - (void)addMessage:(ORMessage *)newMessage animated:(BOOL)animated
 {
-    if (!newMessage || !newMessage.view) {
-        return;
-    }
+    if (!newMessage || !newMessage.view) return;
+    
+    if (self.headerMessage == newMessage) return;
+    
+    if ([self.topMessages indexOfObject:newMessage] != NSNotFound) return;
+    
+    if ([self.defaultMessages indexOfObject:newMessage] != NSNotFound) return;
     
     newMessage.messsageController = self;
     
     // Setup new message
     {
+        if (self.headerMessage != newMessage &&
+            [self.topMessages indexOfObject:newMessage] == NSNotFound &&
+            [self.defaultMessages indexOfObject:newMessage] == NSNotFound) {
+            
+        }
         // Add touch events
         if (newMessage.hidesWhenTouched) {
             UITapGestureRecognizer* tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleMessageTap:)];
@@ -185,10 +194,12 @@
         
         if (newMessage.isHeaderMessage) {
             self.headerMessage = newMessage;
-        } else if (newMessage.showOnTop) {
-            [self.topMessages insertObject:newMessage atIndex:0];
         } else {
-            [self.defaultMessages addObject:newMessage];
+            if (newMessage.showOnTop) {
+                [self.topMessages insertObject:newMessage atIndex:0];
+            } else {
+                [self.defaultMessages addObject:newMessage];
+            }
         }
         
         // Show message (animated)
