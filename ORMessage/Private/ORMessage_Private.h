@@ -12,7 +12,7 @@
 
 @interface ORMessage ()
 
-@property(weak,nonatomic) ORMessageController* messsageController;
+@property(weak) ORMessageController* messsageController;
 @property(strong,nonatomic) NSTimer* timer;
 @property(assign,nonatomic) BOOL isHeaderMessage;
 
