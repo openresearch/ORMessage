@@ -219,8 +219,14 @@
                 animationStartFrame.origin.y -= CGRectGetHeight(animationStartFrame);
             }
             
-            [self.view addSubview:newMessage.view];
-            [self.view bringSubviewToFront:newMessage.view];
+            if (!newMessage.showOnTop && self.topMessages.count >= 1) {
+                ORMessage* lastTopMessage = self.topMessages.lastObject;
+                [self.view insertSubview:newMessage.view belowSubview:lastTopMessage.view];
+            } else {
+                [self.view addSubview:newMessage.view];
+                [self.view bringSubviewToFront:newMessage.view];
+            }
+
             
             newMessage.view.alpha = animationStartAlpha;
             newMessage.view.frame = animationStartFrame;
