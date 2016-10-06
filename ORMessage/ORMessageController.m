@@ -301,12 +301,17 @@
         }
     }
     
+    __weak typeof(self) weak_self = self;
+    
     [UIView animateWithDuration:(animated ? self.defaultAnimationDuration : 0.0) delay:0.0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
         message.view.alpha = animationEndAlpha;
         message.view.frame = animationEndFrame;
     } completion:^(BOOL finished) {
         if (message != self.headerMessage) {
-            [message.view removeFromSuperview];
+            
+            if (![weak_self isDefaultMessage:message] && ![weak_self isTopMessage:message]) {
+                [message.view removeFromSuperview];
+            }
             
             // Notify delegate about removed message
             {
